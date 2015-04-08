@@ -19,13 +19,13 @@ if nargin <= 2
     model.w     = randn(featDim + 1, 1) / (featDim + 1);
     maxIter         = 1000;
 else
-    maxIter = 100;
+    maxIter = 20;
 end
 
-lambda          = 1e-3;
+lambda          = 1e-2;
 iter            = 0; 
 lr              = 1 / num;
-alpha           = 0.9; % Parameter for momentum
+alpha           = 0.99; % Parameter for momentum
 deltaW          = 0;   
 while (iter < maxIter)
     iter        = iter + 1;

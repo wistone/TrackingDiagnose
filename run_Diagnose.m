@@ -43,15 +43,20 @@ function results = run_Diagnose(seq, res_path, bSaveImage)
             prob = ones(1, size(tmpl, 1));
         end
              
-        tmplPos = globalParam.PosSampler(p, seq.opt);
-        tmplNeg = globalParam.NegSampler(p, seq.opt);
-        [dataPos, seq.opt] = globalParam.FeatureExtractor(frame, tmplPos, seq.opt);
-        [dataNeg, seq.opt] = globalParam.FeatureExtractor(frame, tmplNeg, seq.opt);
+        
         
         if (f == 1)
+            tmplPos = globalParam.PosSampler(p, seq.opt);
+            tmplNeg = globalParam.NegSampler(p, seq.opt);
+            [dataPos, seq.opt] = globalParam.FeatureExtractor(frame, tmplPos, seq.opt);
+            [dataNeg, seq.opt] = globalParam.FeatureExtractor(frame, tmplNeg, seq.opt);
             model   = globalParam.ObservationModelTrain(dataPos, dataNeg);  
         else
             if (globalParam.ConfidenceJudger(model, seq.opt))
+                tmplPos = globalParam.PosSampler(p, seq.opt);
+                tmplNeg = globalParam.NegSampler(p, seq.opt);
+                [dataPos, seq.opt] = globalParam.FeatureExtractor(frame, tmplPos, seq.opt);
+                [dataNeg, seq.opt] = globalParam.FeatureExtractor(frame, tmplNeg, seq.opt);
                 disp(f);
                 model   = globalParam.ObservationModelTrain(dataPos, dataNeg, model);  
             end
