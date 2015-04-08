@@ -2,4 +2,5 @@ trackingDataset/*
 *.m~
 ref/*
 .dropbox
-
+*/*.m~
+*/*.cpp~
