@@ -35,7 +35,6 @@ while (iter < maxIter)
 %     deltaW       = lr * (feat * loss' - lambda * model.w);
     model.w     = model.w + deltaW;
 %     disp(norm(loss));
-    
 end
 
 end

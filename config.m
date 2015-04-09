@@ -1,5 +1,6 @@
 
 opt.condenssig = 0.05;
+opt.useNormalSize = true;
 opt.normalWidth = 320;
 opt.normalHeight = 240;
 
@@ -26,4 +27,6 @@ opt.MotionModel.ParticleFilterMotionModel.N = 400;
 opt.MotionModel.ParticleFilterMotionModel.affsig = [6,6, 0.01, 0.001];
 
 opt.ClassificationScoreJudger.thresold = 0.95;
+
+opt.useFirstFrame = true;
 % opt.ClassificationScoreJudger.thresold = 10; % SOSVM

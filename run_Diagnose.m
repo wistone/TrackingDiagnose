@@ -1,6 +1,7 @@
 function results = run_Diagnose(seq, res_path, bSaveImage)
     configGlobalParam;
     config;
+    rng(0);
     seq.opt = opt;
     rect=seq.init_rect;
     p = [rect(1)+rect(3)/2, rect(2)+rect(4)/2, rect(3), rect(4)]; % Center x, Center y, height, width
@@ -25,8 +26,10 @@ function results = run_Diagnose(seq, res_path, bSaveImage)
         if size(frame,3)==1
             frame = repmat(frame,[1,1,3]);
         end
-%         frame = imresize(frame, [seq.opt.normalHeight, seq.opt.normalWidth]);
-        frame = mexResize(frame, [seq.opt.normalHeight, seq.opt.normalWidth], 'auto');
+        if (seq.opt.useNormalSize)
+%           frame = imresize(frame, [seq.opt.normalHeight, seq.opt.normalWidth]);
+            frame = mexResize(frame, [seq.opt.normalHeight, seq.opt.normalWidth], 'auto');
+        end
         frame = im2double(frame);
         
         if (f ~= 1)
@@ -41,9 +44,7 @@ function results = run_Diagnose(seq, res_path, bSaveImage)
         else
             tmpl = globalParam.MotionModel(p, 1, seq.opt);
             prob = ones(1, size(tmpl, 1));
-        end
-             
-        
+        end     
         
         if (f == 1)
             tmplPos = globalParam.PosSampler(p, seq.opt);
@@ -51,6 +52,11 @@ function results = run_Diagnose(seq, res_path, bSaveImage)
             [dataPos, seq.opt] = globalParam.FeatureExtractor(frame, tmplPos, seq.opt);
             [dataNeg, seq.opt] = globalParam.FeatureExtractor(frame, tmplNeg, seq.opt);
             model   = globalParam.ObservationModelTrain(dataPos, dataNeg);  
+            if (seq.opt.useFirstFrame)
+                assert(~strcmp(func2str(globalParam.ObservationModelTrain), 'SOSVMTrain'), ...
+                    'SOSVM does not support useFirstFrame option!!');
+                dataPosFirstFrame = dataPos;
+            end
         else
             if (globalParam.ConfidenceJudger(model, seq.opt))
                 tmplPos = globalParam.PosSampler(p, seq.opt);
@@ -58,6 +64,10 @@ function results = run_Diagnose(seq, res_path, bSaveImage)
                 [dataPos, seq.opt] = globalParam.FeatureExtractor(frame, tmplPos, seq.opt);
                 [dataNeg, seq.opt] = globalParam.FeatureExtractor(frame, tmplNeg, seq.opt);
                 disp(f);
+                if (seq.opt.useFirstFrame)
+                    dataPos.feat = [dataPosFirstFrame.feat, dataPos.feat];
+                    dataPos.tmpl = [zeros(size(dataPosFirstFrame.tmpl)); dataPos.tmpl];
+                end
                 model   = globalParam.ObservationModelTrain(dataPos, dataNeg, model);  
             end
         end

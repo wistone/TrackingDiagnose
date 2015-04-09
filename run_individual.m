@@ -37,7 +37,15 @@
 %    affsig(6) = skew angle
 % clear all
 close all;
-name = 'Basketball'; 
+name = 'Car4'; 
+
+addpath(genpath('FeatureExtractor'));
+addpath(genpath('MotionModel'));
+addpath(genpath('ObservationModel'));
+addpath(genpath('sampler'));
+addpath(genpath('UpdateJudger'));
+addpath(genpath('Utils'));
+
 % dataPath = ['../MEEMDataset/', name]; 
 dataPath = ['trackingDataset/', name];
 config;
@@ -56,7 +64,7 @@ end
 if strcmp(name, 'Jogging') == 0
     rects = importdata([dataPath, '/groundtruth_rect.txt']);
 else
-    rects = importdata([dataPath, '/groundtruth_rect.1.txt']);
+    rects = importdata([dataPath, '/groundtruth_rect.2.txt']);
 end
 % rects = importdata([dataPath, '/', 	name,'.txt']);
 p = rects(1,:);

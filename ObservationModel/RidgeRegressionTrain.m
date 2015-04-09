@@ -12,7 +12,7 @@ label           = zeros(num, 1);
 label(1:numPos) = 1;
 
 % lambda          = opt.RidgeRegression.lambda;
-lambda          = 0.1;
+lambda          = 0.01;
 if nargin <= 2
     % A = X'X/n; B = X'y/n; beta = inv(A + lambda I) * B
     model.A        = feat' * feat / num;
