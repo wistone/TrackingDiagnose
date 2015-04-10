@@ -23,6 +23,8 @@ opt.MotionModel.SlidingWindowMotionModel.slidingH = 20;
 opt.MotionModel.SlidingWindowMotionModel.slidingW = 20;
 opt.MotionModel.SlidingWindowMotionModel.stride = 2;
 
+opt.MotionModel.RadiusSlidingWindowMotionModel.radius = 30; 
+
 opt.MotionModel.ParticleFilterMotionModel.N = 400;
 opt.MotionModel.ParticleFilterMotionModel.affsig = [6,6, 0.01, 0.001];
 
