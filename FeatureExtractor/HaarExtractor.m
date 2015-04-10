@@ -52,5 +52,7 @@ features = mexHaar(opt.HaarOpt.hMin, ...
         opt.HaarOpt.area, ...
         tmpl, integralIm);
 
-data.feat = features;
+div = sqrt(sum(features.*features));
+div(div < 1e-6) = 1;
+data.feat = bsxfun(@rdivide, features, div);
 data.tmpl = tmpl;
