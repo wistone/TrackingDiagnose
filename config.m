@@ -19,16 +19,24 @@ opt.Sampler.NegSlidingWindowSampler.excludeNegRatio = 0.3;
 opt.Sampler.PosSlidingWindowSampler.PosSlidingH = 5;
 opt.Sampler.PosSlidingWindowSampler.PosSlidingW = 5;
 
-opt.MotionModel.SlidingWindowMotionModel.slidingH = 20;
-opt.MotionModel.SlidingWindowMotionModel.slidingW = 20;
+opt.MotionModel.SlidingWindowMotionModel.slidingH = 30;
+opt.MotionModel.SlidingWindowMotionModel.slidingW = 30;
 opt.MotionModel.SlidingWindowMotionModel.stride = 2;
 
-opt.MotionModel.RadiusSlidingWindowMotionModel.radius = 30; 
+opt.MotionModel.RadiusSlidingWindowMotionModel.radius = 20; 
+opt.MotionModel.RadiusSlidingWindowMotionModel.stride = 2;
 
 opt.MotionModel.ParticleFilterMotionModel.N = 400;
 opt.MotionModel.ParticleFilterMotionModel.affsig = [6,6, 0.01, 0.001];
 
 opt.ClassificationScoreJudger.thresold = 0.95;
+opt.UpdateCorrectJudger.thresold = 0.95;
+opt.UpdateDifferenceJudger.thresold = 0.2;
 
 opt.useFirstFrame = true;
 % opt.ClassificationScoreJudger.thresold = 10; % SOSVM
+
+opt.KernelRidge.ker = 'rbf';
+opt.KernelRidge.RegulationTerm = 1;
+opt.KernelRidge.rbfSigma = 1;
+opt.KernelRidge.polyParameters = [1 2];
