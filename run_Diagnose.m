@@ -10,12 +10,14 @@ function results = run_Diagnose(seq, res_path, bSaveImage)
         frame = repmat(frame,[1,1,3]);
     end
     frame = rgb2gray(frame);
-    scaleHeight = size(frame, 1) / seq.opt.normalHeight;
-    scaleWidth = size(frame, 2) / seq.opt.normalWidth;
-    p(1) = p(1) / scaleWidth;
-    p(3) = p(3) / scaleWidth;
-    p(2) = p(2) / scaleHeight;
-    p(4) = p(4) / scaleHeight;
+    if (seq.opt.useNormalSize)
+        scaleHeight = size(frame, 1) / seq.opt.normalHeight;
+        scaleWidth = size(frame, 2) / seq.opt.normalWidth;
+        p(1) = p(1) / scaleWidth;
+        p(3) = p(3) / scaleWidth;
+        p(2) = p(2) / scaleHeight;
+        p(4) = p(4) / scaleHeight;
+    end
     
     duration = 0;
     tic;
@@ -41,6 +43,17 @@ function results = run_Diagnose(seq, res_path, bSaveImage)
             p = tmpl(maxIdx, :);
             model.lastOutput = p;
             model.lastProb = maxProb;
+            if (strcmp(func2str(globalParam.ConfidenceJudger), 'UpdateDifferenceJudger'))
+                w1 = max(round(tmpl(:, 1) - tmpl(:, 3) / 2), round(p(:, 1) - p(:, 3) / 2));
+                w2 = min(round(tmpl(:, 1) + tmpl(:, 3) / 2), round(p(:, 1) + p(:, 3) / 2));
+                h1 = max(round(tmpl(:, 2) - tmpl(:, 4) / 2), round(p(:, 2) - p(:, 4) / 2));
+                h2 = min(round(tmpl(:, 2) + tmpl(:, 4) / 2), round(p(:, 2) + p(:, 4) / 2));
+                interArea = max(w2 - w1, 0) .* max(h2 - h1, 0);
+                jointArea = (round(tmpl(:, 3)) .* round(tmpl(:, 4)) + round(p(3)) * round(p(4))) - interArea;
+                overlapRatio = interArea ./ jointArea;
+                idx = (overlapRatio < 0.5);
+                model.secondProb = max(prob(idx));
+            end
         else
             tmpl = globalParam.MotionModel(p, 1, seq.opt);
             prob = ones(1, size(tmpl, 1));
@@ -75,10 +88,12 @@ function results = run_Diagnose(seq, res_path, bSaveImage)
         figure(1),imagesc(frame);
         rectangle('position', [p(1) - p(3) / 2, p(2) - p(4) / 2, p(3), p(4)], ...
             'EdgeColor','r', 'LineWidth',2);
-        p(1) = p(1) * scaleWidth;
-        p(3) = p(3) * scaleWidth;
-        p(2) = p(2) * scaleHeight;
-        p(4) = p(4) * scaleHeight;
+        if (seq.opt.useNormalSize)
+            p(1) = p(1) * scaleWidth;
+            p(3) = p(3) * scaleWidth;
+            p(2) = p(2) * scaleHeight;
+            p(4) = p(4) * scaleHeight;
+        end
         rect = [p(1) - p(3) / 2, p(2) - p(4) / 2, p(3), p(4)];
         reportRes = [reportRes; round(rect)];
     end
