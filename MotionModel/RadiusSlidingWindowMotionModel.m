@@ -1,11 +1,12 @@
 function [tmpl] = RadiusSlidingWindowMotionModel(initTmpl, initConf, opt)
 
 radius          = opt.MotionModel.RadiusSlidingWindowMotionModel.radius;
+stride          = opt.MotionModel.RadiusSlidingWindowMotionModel.stride;
 
 r2 = radius^2;
 
-hVec            = -radius:radius;
-wVec            = -radius:radius;
+hVec            = -radius:stride:radius;
+wVec            = -radius:stride:radius;
 [wMat, hMat]    = meshgrid(wVec, hVec);
 
 wMat = wMat(:); hMat = hMat(:);
